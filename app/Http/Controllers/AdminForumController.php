@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ForumPost;
 use App\Models\User;
+use App\Models\Music;
 
 class AdminForumController extends Controller
 {
     public function index()
     {
         $posts = ForumPost::all();
-        $users = User::where('id', '!=', auth()->id())
-            ->where('admin')
-            ->get();
-        return view('adminforum.index', compact('posts', 'users'));
+        $users = User::where('id', '!=', auth()->id())->where('admin')->get();
+        $music = Music::all();
+        return view('adminforum.index', compact('posts', 'users', 'music'));
     }
 
     public function edit($id)
@@ -70,5 +70,13 @@ class AdminForumController extends Controller
         $user->save(); // Saglabāt izmaiņas datubāzē
 
         return redirect()->route('adminforum.index')->with('success', 'User block status updated!');
+    }
+
+    public function deleteMusic($id)
+    {
+        $track = Music::findOrFail($id);
+        $track->delete();  // Dzēš dziesmu no datubāzes
+
+        return redirect()->route('adminforum.index')->with('success', 'Music track deleted successfully!');
     }
 }

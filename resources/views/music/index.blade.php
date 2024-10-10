@@ -29,34 +29,35 @@
 
                 <!-- Music Player -->
                 <div class="flex-1 bg-gray-900 p-6 rounded-lg flex flex-col items-center">
-                    <img id="albumCover" src="" alt="Album Cover" class="w-48 h-48 rounded-lg mb-4 hidden">
-                    <p id="trackTitle" class="text-white text-lg font-bold mb-2 hidden"></p>
-                    <p id="trackArtist" class="text-gray-400 text-sm mb-4 hidden"></p>
-                    
-                    <audio id="audioPlayer" controls class="hidden">
-                        <source id="audioSource" src="" type="audio/mpeg">
-                        Your browser does not support the audio element.
-                    </audio>
+                    <img id="albumCover" src="" alt="Album Cover" class="w-48 h-48 object-contain mb-4">
+                    <p id="trackTitle" class="text-white text-lg font-bold mb-2"></p>
+                    <p id="trackArtist" class="text-gray-400 text-sm mb-4"></p>
 
                     <div class="flex items-center space-x-4 mb-4">
-                        <!-- Player Controls -->
-                        <button onclick="prevTrack()" class="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition">
+                        <!-- Custom Player Controls without background -->
+                        <button onclick="prevTrack()" class="text-white hover:text-teal-400 transition">
                             ⏮️
                         </button>
-                        <button onclick="togglePlayPause()" class="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition" id="playPauseBtn">
+                        <button onclick="togglePlayPause()" class="text-white hover:text-teal-400 transition" id="playPauseBtn">
                             ▶️
                         </button>
-                        <button onclick="nextTrack()" class="bg-gray-700 text-white p-3 rounded-full hover:bg-gray-600 transition">
+                        <button onclick="nextTrack()" class="text-white hover:text-teal-400 transition">
                             ⏭️
                         </button>
                     </div>
 
-                    <!-- Time Seek Bar -->
-                    <div class="flex items-center space-x-2 w-full mb-4">
-                        <input type="range" id="seekBar" class="w-full bg-gray-700 appearance-none h-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" value="0" onchange="seekTrack()" style="accent-color: red;">
+                    <!-- Time Display -->
+                    <div class="flex justify-between w-full text-white text-sm">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
                     </div>
 
-                    <!-- Volume Control with Speaker Icon -->
+                    <!-- Custom Time Seek Bar -->
+                    <div class="flex items-center space-x-2 w-full mb-4">
+                        <input type="range" id="seekBar" class="w-full bg-gray-700 appearance-none h-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" value="0" max="100" onchange="seekTrack()" style="accent-color: red;">
+                    </div>
+
+                    <!-- Volume Control -->
                     <div class="flex items-center space-x-2 w-full">
                         <input type="range" id="volumeBar" class="w-full bg-gray-700 appearance-none h-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500" value="100" max="100" onchange="changeVolume()" style="accent-color: red;">
                         <i class="fas fa-volume-up text-gray-400 hover:text-white cursor-pointer"></i>
@@ -69,49 +70,62 @@
     <!-- JavaScript for Music Player -->
     <script>
         const tracks = @json($music);  // Laravel blade directive to pass PHP variable to JavaScript
-        const audioPlayer = document.getElementById('audioPlayer');
-        const audioSource = document.getElementById('audioSource');
+        const audioPlayer = new Audio();
         const trackTitle = document.getElementById('trackTitle');
         const trackArtist = document.getElementById('trackArtist');
         const albumCover = document.getElementById('albumCover');
         const seekBar = document.getElementById('seekBar');
         const volumeBar = document.getElementById('volumeBar');
         const playPauseBtn = document.getElementById('playPauseBtn');
+        const currentTimeDisplay = document.getElementById('currentTime');  // Jauns elements, kas rāda pašreizējo laiku
+        const totalTimeDisplay = document.getElementById('totalTime');  // Jauns elements, kas rāda kopējo dziesmas laiku
 
         let currentTrackIndex = 0;
+        let isPlaying = false;  // To track if a song is playing
+
+        // Load the first track when the page loads
+        window.onload = function () {
+            loadTrack(currentTrackIndex);
+        };
 
         function loadTrack(index) {
             const track = tracks[index];
-            audioSource.src = "{{ asset('') }}" + track.file_path;
-            audioPlayer.load();
-            
+            audioPlayer.src = "{{ asset('') }}" + track.file_path;
+
             trackTitle.textContent = track.title;
             trackArtist.textContent = track.artist;
             albumCover.src = track.cover_image ? "{{ asset('') }}" + track.cover_image : '';
-            
+
             trackTitle.classList.remove('hidden');
             trackArtist.classList.remove('hidden');
             albumCover.classList.toggle('hidden', !track.cover_image);
-            audioPlayer.classList.remove('hidden');
+
+            audioPlayer.load();
         }
-        
+
         function playTrack(index) {
             currentTrackIndex = index;
             loadTrack(currentTrackIndex);
             audioPlayer.play();
-            playPauseBtn.textContent = '||';
+            isPlaying = true;
+            playPauseBtn.textContent = '⏸️';
         }
-        
+
+        // Play the first track if no track has been selected yet
         function togglePlayPause() {
-            if (audioPlayer.paused) {
-                audioPlayer.play();
-                playPauseBtn.textContent = '||';
+            if (!isPlaying) {
+                playTrack(currentTrackIndex);  // Play the first track if none is playing
             } else {
-                audioPlayer.pause();
-                playPauseBtn.textContent = '▶️';
+                if (audioPlayer.paused) {
+                    audioPlayer.play();
+                    playPauseBtn.textContent = '⏸️';
+                } else {
+                    audioPlayer.pause();
+                    playPauseBtn.textContent = '▶️';
+                }
             }
         }
-        
+
         function prevTrack() {
             currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
             playTrack(currentTrackIndex);
@@ -123,21 +137,39 @@
         }
 
         function seekTrack() {
-            audioPlayer.currentTime = seekBar.value;
+            const seekValue = seekBar.value;
+            audioPlayer.currentTime = (seekValue / 100) * audioPlayer.duration;
         }
 
         function changeVolume() {
             audioPlayer.volume = volumeBar.value / 100;
         }
-        
+
+        // Pārtīšanas funkcionalitāte
+        seekBar.addEventListener('input', function () {
+            const seekValue = seekBar.value;
+            audioPlayer.currentTime = (seekValue / 100) * audioPlayer.duration;
+        });
+
         // Update seek bar as track plays
-        audioPlayer.ontimeupdate = function() {
-            seekBar.value = audioPlayer.currentTime;
+        audioPlayer.ontimeupdate = function () {
+            seekBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+
+            // Atjaunināt pašreizējo laiku
+            currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
         };
 
         // Update the max value of the seek bar based on the duration of the audio
-        audioPlayer.onloadedmetadata = function() {
-            seekBar.max = audioPlayer.duration;
+        audioPlayer.onloadedmetadata = function () {
+            seekBar.max = 100;  // To ensure it works on percentage scale
+            totalTimeDisplay.textContent = formatTime(audioPlayer.duration);  // Rādīt kopējo dziesmas ilgumu
         };
+
+        // Formatēt laiku (minūtes:sekundes)
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
     </script>
 </x-app-layout>

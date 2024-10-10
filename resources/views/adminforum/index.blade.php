@@ -8,6 +8,8 @@
     <div class="py-12 bg-gray-900">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-br from-gray-800 via-black to-purple-900 shadow-lg rounded-lg border border-gray-700 p-6">
+
+                <!-- Forum Posts Table -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-4">
                     <h3 class="text-white mb-4">Forum Posts</h3>
                     <div class="overflow-x-auto">
@@ -63,7 +65,6 @@
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
                                                 </form>
-
                                                 <form action="{{ route('adminforum.blockUser', $user->id) }}" method="POST" style="display: inline-block;">
                                                     @csrf
                                                     @method('PATCH')
@@ -74,6 +75,37 @@
                                             </td>
                                         </tr>
                                     @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Music Management Table -->
+                <div class="bg-gray-800 rounded-lg shadow-lg p-4 mt-8">
+                    <h3 class="text-white mb-4">Available Music Tracks</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-transparent text-left">
+                            <thead>
+                                <tr class="bg-gray-800 text-white">
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Title</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Artist</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($music as $track)
+                                    <tr class="hover:bg-gray-700">
+                                        <td class="py-2 px-4 border-b border-gray-600 text-white">{{ $track->title }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $track->artist }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600">
+                                            <form action="{{ route('adminforum.deleteMusic', $track->id) }}" method="POST" style="display: inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
