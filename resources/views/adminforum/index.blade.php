@@ -41,6 +41,39 @@
                     </div>
                 </div>
 
+                <!-- User Comments Table -->
+                <div class="bg-gray-800 rounded-lg shadow-lg p-4 mt-8">
+                    <h3 class="text-white mb-4">User Comments</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-transparent text-left">
+                            <thead>
+                                <tr class="bg-gray-800 text-white">
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Comment</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">User</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Post</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($comments as $comment)
+                                    <tr class="hover:bg-gray-700">
+                                        <td class="py-2 px-4 border-b border-gray-600 text-white">{{ $comment->content }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $comment->user->name }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $comment->post->title }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600">
+                                            <form action="{{ route('adminforum.deleteComment', $comment->id) }}" method="POST" style="display: inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- User Management Table -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-4 mt-8">
                     <h3 class="text-white mb-4">Registered Users</h3>

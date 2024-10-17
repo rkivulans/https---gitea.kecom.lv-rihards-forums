@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ForumPost;
 use App\Models\User;
 use App\Models\Music;
+use App\Models\Comment;
 
 class AdminForumController extends Controller
 {
@@ -14,7 +15,8 @@ class AdminForumController extends Controller
         $posts = ForumPost::all();
         $users = User::where('id', '!=', auth()->id())->where('admin')->get();
         $music = Music::all();
-        return view('adminforum.index', compact('posts', 'users', 'music'));
+        $comments = Comment::with('user', 'post')->get();
+        return view('adminforum.index', compact('posts', 'users', 'music', 'comments'));
     }
 
     public function edit($id)
@@ -78,5 +80,13 @@ class AdminForumController extends Controller
         $track->delete();  // Dzēš dziesmu no datubāzes
 
         return redirect()->route('adminforum.index')->with('success', 'Music track deleted successfully!');
+    }
+
+    public function deleteComment($id)
+    {
+        $comment = Comment::findOrFail($id);
+        $comment->delete();
+
+        return redirect()->route('adminforum.index')->with('success', 'Comment deleted successfully!');
     }
 }
