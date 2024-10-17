@@ -32,7 +32,7 @@ class ForumController extends Controller
         }
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:1000',
             'image' => 'nullable|image|max:9000',  // Validate image
             'youtube_link' => 'nullable|url',  // Validate YouTube link
         ]);
