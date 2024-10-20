@@ -9,6 +9,28 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-br from-gray-800 via-black to-purple-900 shadow-lg rounded-lg border border-gray-700 p-6">
 
+                    <!-- Success Message -->
+                    @if (session('deleted'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('deleted') }}</span>
+                        </div>
+                    @endif
+
+                    @if (session('updated'))
+                        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('updated') }}</span>
+                        </div>
+                    @endif
+
+                    @if (session('status'))
+                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('status') }}</span>
+                        </div>
+                    @endif
+
                 <!-- Forum Posts Table -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-4">
                     <h3 class="text-white mb-4">Forum Posts</h3>

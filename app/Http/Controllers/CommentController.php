@@ -20,7 +20,7 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        return redirect()->route('forum.show', $forum)->with('success', 'Comment added successfully!');
+        return redirect()->route('forum.show', $forum)->with('added', 'Comment added successfully!');
     }
 
     public function destroy(ForumPost $forum, Comment $comment)
@@ -31,8 +31,7 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        // Atgriežas uz postu, kurā bija dzēstais komentārs
-        return redirect()->route('forum.show', $comment->forum_post_id)->with('success', 'Comment deleted successfully!');
+        return redirect()->route('forum.show', $forum->id)->with('deleted', 'Comment deleted successfully!');
     }
 
     public function edit(ForumPost $forum, Comment $comment)
@@ -58,7 +57,6 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        // Atgriežas uz postu, kurā bija rediģētais komentārs
-        return redirect()->route('forum.show', $comment->forum_post_id)->with('success', 'Comment updated successfully!');
+        return redirect()->route('forum.show', $forum->id)->with('updated', 'Comment updated successfully!');
     }
 }

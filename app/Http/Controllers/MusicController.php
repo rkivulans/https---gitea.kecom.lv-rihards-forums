@@ -64,6 +64,6 @@ class MusicController extends Controller
         Music::create($validated);
 
         // Pārvirza atpakaļ uz mūzikas skatu ar veiksmīgu ziņojumu
-        return redirect()->route('music.index')->with('success', 'Music added successfully!');
+        return redirect()->route('music.index')->with('added', 'Music added successfully!');
     }
 }

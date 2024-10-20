@@ -12,6 +12,14 @@
                 <a href="{{ route('music.create') }}" class="bg-blue-500 text-white p-2 rounded mb-4">Add New Music</a>
             @endif
 
+            <!-- Success Messages -->
+            @if (session('added'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                    <span class="block sm:inline">{{ session('added') }}</span>
+                </div>
+            @endif
+
             <div class="bg-gray-800 shadow-lg sm:rounded-lg border border-gray-700 p-6 flex flex-col sm:flex-row">
                 <!-- Track List -->
                 <div class="flex-1 mr-6">

@@ -12,6 +12,15 @@
     <div class="py-12 bg-gray-900 dark:bg-gray-900">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 dark:bg-gray-900 shadow-lg sm:rounded-lg border border-gray-700 dark:border-gray-600 p-6">
+
+                <!-- Success Message -->
+                @if (session('added'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                        <span class="block sm:inline">{{ session('added') }}</span>
+                    </div>
+                @endif
+                
                 @foreach($posts as $post)
                     <div class="p-4 mb-4 bg-gray-700 rounded-lg border border-gray-600">
                         <!-- Post Title as a Link -->

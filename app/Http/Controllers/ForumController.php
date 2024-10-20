@@ -52,7 +52,8 @@ class ForumController extends Controller
             'youtube_link' => $this->extractYoutubeId($request->youtube_link),
         ]);
 
-        return redirect()->route('forum.index')->with('success', 'Post created successfully!');
+        // Add success message after post creation
+        return redirect()->route('forum.index')->with('added', 'Post created successfully!');
     }
 
     // Helper function to extract YouTube video ID
