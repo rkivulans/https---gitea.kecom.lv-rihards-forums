@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('adminforum/user/{id}', [AdminForumController::class, 'deleteUser'])->name('adminforum.deleteUser');
     Route::patch('adminforum/user/{id}', [AdminForumController::class, 'blockUser'])->name('adminforum.blockUser');
 
+    Route::delete('adminforum/music/{id}', [AdminForumController::class, 'deleteMusic'])->name('adminforum.deleteMusic');
+
+    Route::delete('adminforum/comment/{id}', [AdminForumController::class, 'deleteComment'])->name('adminforum.deleteComment');
+
 });
 
 Route::get('/news', [NewsController::class, 'index'])->name('news');

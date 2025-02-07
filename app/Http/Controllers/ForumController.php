@@ -32,7 +32,7 @@ class ForumController extends Controller
         }
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|max:1000',
             'image' => 'nullable|image|max:9000',  // Validate image
             'youtube_link' => 'nullable|url',  // Validate YouTube link
         ]);
@@ -52,7 +52,8 @@ class ForumController extends Controller
             'youtube_link' => $this->extractYoutubeId($request->youtube_link),
         ]);
 
-        return redirect()->route('forum.index')->with('success', 'Post created successfully!');
+        // Add success message after post creation
+        return redirect()->route('forum.index')->with('added', 'Post created successfully!');
     }
 
     // Helper function to extract YouTube video ID

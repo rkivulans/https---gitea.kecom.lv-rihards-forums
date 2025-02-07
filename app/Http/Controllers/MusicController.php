@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Music;
-use Illuminate\Support\Facades\Log; // Importē Log
 
 class MusicController extends Controller
 {
@@ -22,9 +21,9 @@ class MusicController extends Controller
      */
     public function create()
     {
-       // seit man japarbauda vai ielogojies UN vai admins
-       if (! auth()->id() ) {
-        return redirect('login');
+        // Pārbauda, vai lietotājs ir ielogojies un ir administrators
+        if (!auth()->check() || !auth()->user()->admin) {
+            return redirect('login')->with('error', 'You must be an administrator to add music.');
         }
 
         return view('music.create');
@@ -35,9 +34,12 @@ class MusicController extends Controller
      */
     public function store(Request $request)
     {
-        // seit man japarbauda vai ielogojies UN vai admins
-        
-        // Validate input data
+        // Pārbauda, vai lietotājs ir ielogojies un ir administrators
+        if (!auth()->check() || !auth()->user()->admin) {
+            return redirect('login')->with('error', 'You must be an administrator to add music.');
+        }
+
+        // Validē ievades datus
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'artist' => 'required|string|max:255',
@@ -48,19 +50,20 @@ class MusicController extends Controller
             'file_path' => 'required|mimes:mp3,wav|max:20480', // Maksimālais mūzikas faila izmērs 20MB
         ]);
 
-        // Check and save cover image if present
+        // Saglabā albuma attēlu, ja tāds ir
         if ($request->hasFile('cover_image')) {
             $coverImagePath = $request->file('cover_image')->store('cover_images', 'public');
             $validated['cover_image'] = 'storage/' . $coverImagePath;
         }
 
+        // Saglabā mūzikas failu
         $filePath = $request->file('file_path')->store('music_files', 'public');
         $validated['file_path'] = 'storage/' . $filePath;
 
-        // Create a new record in the database
-        $music = Music::create($validated);
+        // Izveido jaunu ierakstu datubāzē
+        Music::create($validated);
 
-        // Redirect back to the index view with a success message
-        return redirect()->route('music.index')->with('success', 'Music added successfully!');
+        // Pārvirza atpakaļ uz mūzikas skatu ar veiksmīgu ziņojumu
+        return redirect()->route('music.index')->with('added', 'Music added successfully!');
     }
 }

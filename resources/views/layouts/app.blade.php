@@ -17,11 +17,6 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Pievieno Audio.js CSS failu -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/audiojs/0.1.0/audiojs.css">
-        <!-- Pievieno Audio.js JS failu -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/audiojs/0.1.0/audiojs.min.js"></script>
-
     </head>
     <body class="font-sans antialiased bg-gray-900 dark:bg-gray-900">
         <div class="min-h-screen bg-gray-900 dark:bg-gray-900">

@@ -8,6 +8,30 @@
     <div class="py-12 bg-gray-900">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gradient-to-br from-gray-800 via-black to-purple-900 shadow-lg rounded-lg border border-gray-700 p-6">
+
+                    <!-- Success Message -->
+                    @if (session('deleted'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('deleted') }}</span>
+                        </div>
+                    @endif
+
+                    @if (session('updated'))
+                        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('updated') }}</span>
+                        </div>
+                    @endif
+
+                    @if (session('status'))
+                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative" role="alert">
+                            <strong class="font-bold">{{ __("Confirmed!") }}</strong>
+                            <span class="block sm:inline">{{ session('status') }}</span>
+                        </div>
+                    @endif
+
+                <!-- Forum Posts Table -->
                 <div class="bg-gray-800 rounded-lg shadow-lg p-4">
                     <h3 class="text-white mb-4">Forum Posts</h3>
                     <div class="overflow-x-auto">
@@ -27,6 +51,39 @@
                                         <td class="py-2 px-4 border-b border-gray-600">
                                             <a href="{{ route('adminforum.edit', $post->id) }}" class="text-blue-400 hover:text-blue-600">Edit</a>
                                             <form action="{{ route('adminforum.destroy', $post->id) }}" method="POST" style="display: inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- User Comments Table -->
+                <div class="bg-gray-800 rounded-lg shadow-lg p-4 mt-8">
+                    <h3 class="text-white mb-4">User Comments</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-transparent text-left">
+                            <thead>
+                                <tr class="bg-gray-800 text-white">
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Comment</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">User</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Post</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($comments as $comment)
+                                    <tr class="hover:bg-gray-700">
+                                        <td class="py-2 px-4 border-b border-gray-600 text-white">{{ $comment->content }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $comment->user->name }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $comment->post->title }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600">
+                                            <form action="{{ route('adminforum.deleteComment', $comment->id) }}" method="POST" style="display: inline-block;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
@@ -63,7 +120,6 @@
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
                                                 </form>
-
                                                 <form action="{{ route('adminforum.blockUser', $user->id) }}" method="POST" style="display: inline-block;">
                                                     @csrf
                                                     @method('PATCH')
@@ -74,6 +130,37 @@
                                             </td>
                                         </tr>
                                     @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Music Management Table -->
+                <div class="bg-gray-800 rounded-lg shadow-lg p-4 mt-8">
+                    <h3 class="text-white mb-4">Available Music Tracks</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full bg-transparent text-left">
+                            <thead>
+                                <tr class="bg-gray-800 text-white">
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Title</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Artist</th>
+                                    <th class="py-2 px-4 border-b-2 border-gray-700">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($music as $track)
+                                    <tr class="hover:bg-gray-700">
+                                        <td class="py-2 px-4 border-b border-gray-600 text-white">{{ $track->title }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600 text-gray-300">{{ $track->artist }}</td>
+                                        <td class="py-2 px-4 border-b border-gray-600">
+                                            <form action="{{ route('adminforum.deleteMusic', $track->id) }}" method="POST" style="display: inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 ml-4">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
